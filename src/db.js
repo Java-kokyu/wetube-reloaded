@@ -11,4 +11,3 @@ const handleOpen = () => console.log("✔ Connected to DB");
 const handleError = () => console.log("❌ DB Error");
 db.on("error", handleError); //could run several times
 db.once("open", handleOpen);
-
