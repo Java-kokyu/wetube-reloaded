@@ -125,20 +125,65 @@ export const githubFinish = async (req, res) => {
                 password: "", 
                 location: userData.location,
             });
+        }
         req.session.loggedIn = true;
         req.session.user = user;
         console.log(`${user.username} is loged in`)
-        return res.redirect("/");
-        }    
+        return res.redirect("/");    
     }else {
         return res.redirect("/login");
     }
 
 }
 
-export const edit = (req, res) => res.send("Edit User");
+export const getEdit = (req, res) => {
+    return res.render("edit-profile", { pageTitle: "Edit Peofile" })
+}
+export const postEdit = async (req, res) => {
+    const { name, email, username, location } = req.body;
+    const { _id, avatarUrl } = req.session.user;
+    const { file } = req
+    const updatedUser = await User.findByIdAndUpdate(_id, {
+        avatarUrl: file? file.path : avatarUrl,
+        name,
+        email,
+        username,
+        location
+    }, { new: true });
+
+    req.session.user = updatedUser;
+    //이미 존재하는 username or email일 때 어떻게 반응해야하는가?
+
+    return res.redirect("/users/edit");
+}
+
+export const getPassword = (req, res) => {
+    return res.render("users/change-password", { pageTitle: "Change Password" })
+}
+export const postPassword = async (req, res) => {
+    const { _id } = req.session.user;
+    const { oldPassword, newPassword, newPassword2 } = req.body
+    const user = await User.findById(_id);
+    const ok = await bcrypt.compare(oldPassword, user.password);
+    if(!ok){
+        return res.status(400).render("users/change-password", { 
+            pageTitle: "Edit Peofile",
+            errorMessage: "wrong password" 
+        })
+    }
+    if(newPassword !== newPassword2){
+        return res.status(400).render("users/change-password", { 
+            pageTitle: "Edit Peofile",
+            errorMessage: "new Password does not match", 
+        })
+    }    
+    user.password = newPassword;
+    await user.save(); //findByIdAndUpdate는 'save'하지 않기에 User.js의 pre를 거치지 않음.
+    return res.redirect("/users/logout");
+    } 
+
 export const logout = (req, res) => {
     req.session.destroy();
     return res.redirect("/")
 }
-export const seeUser = (req, res) => res.send("See User");
+export const seeUser = (req, res) => res.end();

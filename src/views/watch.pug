@@ -1,6 +1,7 @@
 extends base.pug
 
 block content
+    video(src=`/${video.fileUrl}`, width="500px", height="300px", controls)
     div
         p=video.description
         small=video.createdAt
