@@ -3,16 +3,18 @@ extends base
 block content
     if errorMessage
         span=errorMessage
-    form(method="POST" class="login")
-        input(placeholder="Username", name="username" ,type="text", required)
-        input(placeholder="Password", name="password" ,type="password", required)
-        input(type="submit", value="Log in")
-        br
-        span Continue with Github? 
-        a(href="users/github/start") Github &rarr;  
+    form(method="POST")
+        div(class="login")
+            input(placeholder="Username", name="username" ,type="text", required)
+            input(placeholder="Password", name="password" ,type="password", required)
+            input(type="submit", value="Log in", class="btn btn-secondary")
+            br
+            span Continue with Github? 
+            a(href="users/github/start")
+                i.fab.fa-github  
 
     hr
-    div 
+    div(class="createAccount") 
         span Don't have an account? 
         a(href="/join") Create Now &rarr; 
         

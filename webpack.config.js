@@ -2,7 +2,10 @@ const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
-  entry: "./src/client/js/main.js",
+  entry: {
+    main: "./src/client/js/main.js",
+    videoPlayer: "./src/client/js/videoPlayer.js",
+  },
   mode: "development",
   watch: true,
   plugins: [
@@ -16,12 +19,12 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, "assets"),
     clean: true, //변경 전 존재하는 파일, 폴더 삭제
-    filename: "js/main.js",
+    filename: "js/[name].js",
   },
   module: {
     rules: [
       {
-        test: /\.js/,
+        test: /\.m?js$/,
         exclude: /node_modules/,
         use: {
           loader: "babel-loader",
@@ -31,13 +34,24 @@ module.exports = {
         },
       },
       {
-        test: /\.scss/,
+        test: /\.(scss)$/,
         use: [
-          MiniCssExtractPlugin.loader,
-          "css-loader",
-          "postcss-loader",
-          "sass-loader",
-        ], //역순 실행
+          { loader: MiniCssExtractPlugin.loader },
+          { loader: "css-loader" },
+          {
+            loader: "postcss-loader",
+            options: {
+              postcssOptions: {
+                plugins: function () {
+                  return [require("autoprefixer")];
+                },
+              },
+            },
+          },
+          {
+            loader: "sass-loader",
+          },
+        ],
       },
     ],
   },
