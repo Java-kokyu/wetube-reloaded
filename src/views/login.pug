@@ -6,12 +6,13 @@ block content
     form(method="POST")
         div(class="login")
             input(placeholder="Username", name="username" ,type="text", required)
+            br
             input(placeholder="Password", name="password" ,type="password", required)
             input(type="submit", value="Log in", class="btn btn-secondary")
             br
-            span Continue with Github? 
-            a(href="users/github/start")
-                i.fab.fa-github  
+            br
+            button(href="users/github/start", type="button" class="btn btn-dark") Continue with Github? 
+                i.fab.fa-github
 
     hr
     div(class="createAccount") 
